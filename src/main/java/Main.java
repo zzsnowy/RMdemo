@@ -1,3 +1,4 @@
+import gr.uom.java.xmi.diff.MoveAttributeRefactoring;
 import gr.uom.java.xmi.diff.MoveClassRefactoring;
 import gr.uom.java.xmi.diff.MoveOperationRefactoring;
 import org.refactoringminer.api.GitHistoryRefactoringMiner;
@@ -19,51 +20,44 @@ public class Main {
         GitHistoryRefactoringMiner miner = new GitHistoryRefactoringMinerImpl();
 
         Repository repo = gitService.cloneIfNotExists(
-                "/Users/zzsnowy/StudyDiary/MSA/graduationPro/experiment/projects/litemall",
-                "https://github.com/linlinjava/litemall.git");
+                "/Users/zzsnowy/StudyDiary/MSA/graduationPro/experiment/projects/lilishop",
+                "https://github.com/lilishop/lilishop.git");
         miner.detectAll(repo, "master", new RefactoringHandler() {
             @Override
             public void handle(String commitId, List<Refactoring> refactorings) {
+
                 if(refactorings.isEmpty()){
                     return;
                 }
                 boolean flag = false;
                 for (Refactoring ref : refactorings) {
-                    boolean isRef = false;
                     if(ref.getRefactoringType() == MOVE_OPERATION){
-                        isRef = true;
-                        /*
-                        System.out.println(ref.getName());
-                        MoveOperationRefactoring tmp = (MoveOperationRefactoring) ref;
-                        System.out.println(
-                                "getBodyMapper == " + tmp.getBodyMapper() + "\n"
-                                + "getReplacements == " + tmp.getReplacements() + "\n"
-                                + "getSourceOperationCodeRangeBeforeMove == " + tmp.getSourceOperationCodeRangeBeforeMove() + "\n"
-                                + "getTargetOperationCodeRangeAfterMove == " + tmp.getTargetOperationCodeRangeAfterMove() + "\n"+ "getMovedOperation == " + tmp.getMovedOperation() + "\n"
-                                + "getOriginalOperation == " + tmp.getOriginalOperation() + "\n"
-                                + "leftSide == " + tmp.leftSide() + "\n"
-                                + "rightSide == " + tmp.rightSide() + "\n"
-                        );
-                        */
-
-                    } else if(ref.getRefactoringType() == MOVE_ATTRIBUTE){
-                        isRef = true;
-                    } else if(ref.getRefactoringType() == MOVE_AND_RENAME_OPERATION){
-                        isRef = true;
-                    } else if(ref.getRefactoringType() == MOVE_RENAME_ATTRIBUTE){
-                        isRef = true;
-                    }
-                    {
                         if(!flag){
                             System.out.println("Refactorings at " + commitId);
                             flag = true;
                         }
                         System.out.println(ref);
-                        System.out.println(ref.getName() + "    " + ref.getRefactoringType());
+                        MoveOperationRefactoring tmp = (MoveOperationRefactoring) ref;
+                        System.out.println(
+                                "getSourceOperationCodeRangeBeforeMove == " + tmp.getSourceOperationCodeRangeBeforeMove() + "\n"
+                                        + "getTargetOperationCodeRangeAfterMove == " + tmp.getTargetOperationCodeRangeAfterMove() + "\n"
+                                        + "getMovedOperation == " + tmp.getMovedOperation() + "\n"
+                        );
+                    } else if(ref.getRefactoringType() == MOVE_ATTRIBUTE){
+                        if(!flag){
+                            System.out.println("Refactorings at " + commitId);
+                            flag = true;
+                        }
+                        System.out.println(ref);
+                        MoveAttributeRefactoring tmp = (MoveAttributeRefactoring) ref;
+                        System.out.println(
+                                "getSourceAttributeCodeRangeBeforeMove == " + tmp.getSourceAttributeCodeRangeBeforeMove() + "\n"
+                                        + "getTargetAttributeCodeRangeAfterMove == " + tmp.getTargetAttributeCodeRangeAfterMove() + "\n"
+                                        + "getMovedAttribute == " + tmp.getMovedAttribute() + "\n"
+                        );
                     }
+
                 }
-
-
             }
         });
     }
