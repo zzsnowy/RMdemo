@@ -5,12 +5,14 @@ import java.io.*;
 public class CommitUtil {
     public static void main(String[] args) throws IOException {
 
-        File writename = new File("/Users/zzsnowy/StudyDiary/MSA/graduationPro/experiment/commitId/litemall/litemall.txt");
+        String pro = "HikariCP";
+
+        File writename = new File("/Users/zzsnowy/StudyDiary/MSA/graduationPro/experiment/commitId/" + pro + "/" + pro + ".txt");
         writename.createNewFile();
         BufferedWriter out = new BufferedWriter(new FileWriter(writename));
 
-        String pathnameF = "/Users/zzsnowy/StudyDiary/MSA/graduationPro/experiment/commitId/litemall/litemall-fine.txt";
-        String pathnameC = "/Users/zzsnowy/StudyDiary/MSA/graduationPro/experiment/commitId/litemall/litemall-coarse.txt";
+        String pathnameF = "/Users/zzsnowy/StudyDiary/MSA/graduationPro/experiment/commitId/" + pro + "/" + pro + "-fine.txt";
+        String pathnameC = "/Users/zzsnowy/StudyDiary/MSA/graduationPro/experiment/commitId/" + pro + "/" + pro + "-coarse.txt";
         File filenameF = new File(pathnameF);
         InputStreamReader readerF = new InputStreamReader(
                 new FileInputStream(filenameF));
@@ -30,7 +32,8 @@ public class CommitUtil {
         String tmp = "";
         while (lineF != null) {
             if(!tmp.equals("")){
-                out.write(tmp + " " + lineF + "\r\n");
+
+                out.write(tmp + " " + lineF + "\n");
             }
             tmp = lineC + " " + lineF;
             System.out.println(tmp);

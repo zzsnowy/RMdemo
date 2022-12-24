@@ -1,144 +1,149 @@
-import gr.uom.java.xmi.UMLParameter;
-import gr.uom.java.xmi.UMLType;
-import gr.uom.java.xmi.diff.MoveAttributeRefactoring;
-import gr.uom.java.xmi.diff.MoveClassRefactoring;
-import gr.uom.java.xmi.diff.MoveOperationRefactoring;
 import org.refactoringminer.api.GitHistoryRefactoringMiner;
 import org.refactoringminer.api.GitService;
-import org.refactoringminer.api.Refactoring;
-import org.refactoringminer.api.RefactoringHandler;
 import org.refactoringminer.rm1.GitHistoryRefactoringMinerImpl;
 import org.refactoringminer.util.GitServiceImpl;
 import org.eclipse.jgit.lib.Repository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
-import static org.refactoringminer.api.RefactoringType.*;
 
 public class Main {
+
+    static Logger logger = LoggerFactory.getLogger(Main.class);
+    static String pro = "HikariCP";
     public static void main(String[] args) throws Exception {
-        GitService gitService = new GitServiceImpl();
-        GitHistoryRefactoringMiner miner = new GitHistoryRefactoringMinerImpl();
 
-        Repository repo = gitService.cloneIfNotExists(
-                "/Users/zzsnowy/StudyDiary/MSA/graduationPro/experiment/projects/litemall",
-                "https://github.com/lilishop/lilishop.git");
+        String dpathname = "/Users/zzsnowy/StudyDiary/MSA/graduationPro/experiment/dependencies/" + pro;
 
-        File writename = new File("/Users/zzsnowy/StudyDiary/MSA/graduationPro/experiment/MoveRefCommitId/litemall.txt");
-        writename.createNewFile();
-        BufferedWriter out = new BufferedWriter(new FileWriter(writename));
+        System.out.println("请选择是否从文件读取：1.是 2.否");
+        Scanner input = new Scanner(System.in);
+        int k = input.nextInt();
+        if(k == 1){
 
-        String pathname = "/Users/zzsnowy/StudyDiary/MSA/graduationPro/experiment/commitId/litemall/litemall.txt";
-        File filename = new File(pathname);
-        InputStreamReader reader = new InputStreamReader(
-                new FileInputStream(filename));
-        BufferedReader br = new BufferedReader(reader);
-        String line = "";
-        line = br.readLine();
+            InputStream in =  new  FileInputStream( "io" + File.separator + "map.txt" );
+            ObjectInputStream os =  new  ObjectInputStream(in);
+            Map<String, List<String>[]> dClassifyMap = (Map<String, List<String>[]>) os.readObject();
+            os.close();
+            //removeMap(dClassifyMap);
+            labelDependency(dpathname, dClassifyMap);
+        } else if(k == 2){
 
-        while (line != null) {
-            String coarse = line.split(" ")[0];
-            String fine = line.split(" ")[1];
-            String lastFineCommitId = line.split(" ")[2];;
-            miner.detectAtCommit(repo, coarse, new RefactoringHandler() {
-                @Override
-                public void handle(String commitId, List<Refactoring> refactorings) {
-                    if(refactorings.isEmpty()){
-                        return;
-                    }
-                    boolean flag = false;
-                    for (Refactoring ref : refactorings) {
-                        if(ref.getRefactoringType() == MOVE_OPERATION){
-                            if(!flag){
-                                isFlag(commitId, fine, lastFineCommitId, out);
-                            }
-                            System.out.println(ref);
-                            MoveOperationRefactoring tmp = (MoveOperationRefactoring) ref;
-                            /*System.out.println(
-                                    "getSourceOperationCodeRangeBeforeMove == " + tmp.getSourceOperationCodeRangeBeforeMove() + "\n"
-                                            + "getTargetOperationCodeRangeAfterMove == " + tmp.getTargetOperationCodeRangeAfterMove() + "\n"
-                                            + "getMovedOperation == " + tmp.getMovedOperation() + "\n"
-                            );*/
-                            String pathBeforeMove = tmp.getSourceOperationCodeRangeBeforeMove().getFilePath();
-                            String pathAfterMove = tmp.getTargetOperationCodeRangeAfterMove().getFilePath();
-                            String methodName = tmp.getMovedOperation().getName();
-                            List<UMLType> parameterType = tmp.getMovedOperation().getParameterTypeList();
-                            System.out.println(
-                                    "pathBeforeMove:" + pathBeforeMove + "\n"
-                                            + "pathAfterMove:" + pathAfterMove + "\n"
-                                            + "methodName:" + methodName + "\n"
-                                            + "parameterType:" + parameterType
-                            );
+            GitService gitService = new GitServiceImpl();
+            GitHistoryRefactoringMiner miner = new GitHistoryRefactoringMinerImpl();
 
-                            getMoveMethodRef(pathBeforeMove, parameterType, pathAfterMove, methodName);
+            Repository repo = gitService.cloneIfNotExists(
+                    "/Users/zzsnowy/StudyDiary/MSA/graduationPro/experiment/projects/" + pro,
+                    "");
 
+            File writename = new File("/Users/zzsnowy/StudyDiary/MSA/graduationPro/experiment/MoveRefCommitId/" + pro + ".txt");
+            writename.createNewFile();
+            BufferedWriter out = new BufferedWriter(new FileWriter(writename));
 
-
-                        } else if(ref.getRefactoringType() == MOVE_ATTRIBUTE){
-                            if(!flag){
-                                flag = isFlag(commitId, fine, lastFineCommitId, out);
-                            }
-                            System.out.println(ref);
-                            MoveAttributeRefactoring tmp = (MoveAttributeRefactoring) ref;
-                            /*System.out.println(
-                                    "getSourceAttributeCodeRangeBeforeMove == " + tmp.getSourceAttributeCodeRangeBeforeMove() + "\n"
-                                            + "getTargetAttributeCodeRangeAfterMove == " + tmp.getTargetAttributeCodeRangeAfterMove() + "\n"
-                                            + "getMovedAttribute == " + tmp.getMovedAttribute() + "\n"
-                            );*/
-                            String pathBeforeMove = tmp.getSourceAttributeCodeRangeBeforeMove().getFilePath();
-                            String pathAfterMove = tmp.getTargetAttributeCodeRangeAfterMove().getFilePath();
-                            String attName = tmp.getMovedAttribute().getName();
-                            System.out.println(
-                                    "pathBeforeMove:" + pathBeforeMove + "\n"
-                                            + "pathAfterMove:" + pathAfterMove + "\n"
-                                            + "attName:" + attName
-                            );
-
-                            getMoveAttRef(pathBeforeMove, attName, pathAfterMove);
-
-                        }
-
-                    }
-                }
-            });
+            String pathname = "/Users/zzsnowy/StudyDiary/MSA/graduationPro/experiment/commitId/" + pro + "/" + pro + ".txt";
+            File filename = new File(pathname);
+            InputStreamReader reader = new InputStreamReader(
+                    new FileInputStream(filename));
+            BufferedReader br = new BufferedReader(reader);
+            String line = "";
             line = br.readLine();
+
+            Map<String, List<String>[]> dependencyClassifyMap = new HashMap<>();
+            while (line != null) {
+                String coarse = line.split(" ")[0];
+                String fine = line.split(" ")[1];
+                String lastFineCommitId = line.split(" ")[2];
+                try {
+                    miner.detectAtCommit(repo, coarse, new MoveRefactoringHandler(fine, lastFineCommitId, out, dependencyClassifyMap) {});
+
+                } catch (Exception e) {
+                }
+                line = br.readLine();
+            }
+
+            out.flush(); // 把缓存区内容压入文件
+            out.close(); // 关闭文件
+
+            removeMap(dependencyClassifyMap);
+
+            //序列化
+            try (OutputStream op =  new  FileOutputStream( "io" + File.separator + "map.txt" );
+                 ObjectOutputStream ops =  new  ObjectOutputStream(op);) {
+                ops.writeObject(dependencyClassifyMap);
+            }
+
+            labelDependency(dpathname, dependencyClassifyMap);
+        } else {
+            System.out.println("输入有误！");
         }
-        out.flush(); // 把缓存区内容压入文件
-        out.close(); // 关闭文件
+
     }
 
-    private static boolean isFlag(String commitId, String fine, String lastFineCommitId, BufferedWriter out) {
-        boolean flag;
-        System.out.println("Refactorings at " + commitId + " " + fine + " " + lastFineCommitId);
-        try {
-            out.write(lastFineCommitId + "\r\n");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        flag = true;
-        return flag;
-    }
-
-    private static void getMoveAttRef(String pathBeforeMove, String attName, String pathAfterMove) {
-        String pathBeforeMoveRe = pathBeforeMove.replace("/","_");
-        String pathAfterMoveRe = pathAfterMove.replace("/","_");
-        System.out.println("[\\s\\S]*" + pathBeforeMoveRe + "[\\s\\S]*" + attName + "[\\s\\S]*" +pathAfterMoveRe + "[\\s\\S]*");
-    }
-
-    private static void getMoveMethodRef(String pathBeforeMove, List<UMLType> parameterType, String pathAfterMove, String methodName) {
-        String pathBeforeMoveRe = pathBeforeMove.replace("/","_");
-        String methodSignature = methodName + "(";
-        for(int i = 0; i < parameterType.size(); i ++){
-            String type = parameterType.get(i).toString();
-            methodSignature += type;
-            if(i != parameterType.size() - 1){
-                methodSignature += ",";
+    private static void removeMap(Map<String, List<String>[]> dependencyClassifyMap) {
+        List<String> r = new ArrayList<>();
+        for (Map.Entry<String, List<String>[]> entry : dependencyClassifyMap.entrySet()){
+            List<String> listMM = entry.getValue()[0];
+            List<String> listMF = entry.getValue()[1];
+            if(listMM.isEmpty() && listMF.isEmpty()){
+                r.add(entry.getKey());
             }
         }
-        methodSignature += ")" ;
-        String pathAfterMoveRe = pathAfterMove.replace("/","_");
-        System.out.println("[\\s\\S]*" + pathBeforeMoveRe + "[\\s\\S]*" + methodSignature + "[\\s\\S]*" +pathAfterMoveRe + "[\\s\\S]*");
+        for(String s : r){
+            dependencyClassifyMap.remove(s);
+            logger.info("{}被移除", s);
+        }
+
+
     }
+
+
+    private static void labelDependency(String dpathname, Map<String, List<String>[]> dependencyClassifyMap) throws IOException {
+
+        for (Map.Entry<String, List<String>[]> entry : dependencyClassifyMap.entrySet()) {
+
+            String commitId = entry.getKey();
+
+            System.out.println("正在处理：" + commitId);
+            List<String> listMM = entry.getValue()[0];
+            List<String> listMF = entry.getValue()[1];
+            String pathname = dpathname + "/" + pro + "_" + commitId + ".txt";
+
+            File filename = new File(pathname);
+
+            if (!filename.exists()){
+                System.out.println(commitId + "不存在");
+                continue;
+            }
+            InputStreamReader reader = new InputStreamReader(
+                    new FileInputStream(filename));
+            BufferedReader br = new BufferedReader(reader);
+            String line = "";
+            line = br.readLine();
+            while (line != null) {
+                boolean flag = false;
+                for(String mm : listMM){
+                    //System.out.println(mm);
+                    if (line.matches(mm)){
+                        flag = true;
+                        System.out.println("MM:" + line);
+                    }
+                }
+
+                for(String mf : listMF){
+                    //System.out.println(mf);
+                    if (line.matches(mf)){
+                        flag = true;
+                        System.out.println("MF:" + line);
+                    }
+                }
+                if(!flag){
+                    //System.out.println("nolabel " + line);
+                }
+                line = br.readLine();
+            }
+        }
+    }
+
 }
