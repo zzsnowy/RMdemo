@@ -1,3 +1,5 @@
+package refactoring;
+
 import gr.uom.java.xmi.UMLType;
 import gr.uom.java.xmi.diff.MoveAttributeRefactoring;
 import gr.uom.java.xmi.diff.MoveOperationRefactoring;
@@ -17,7 +19,7 @@ import static org.refactoringminer.api.RefactoringType.MOVE_ATTRIBUTE;
 import static org.refactoringminer.api.RefactoringType.MOVE_OPERATION;
 
 public class MoveRefactoringHandler extends RefactoringHandler {
-    static Logger logger = LoggerFactory.getLogger(Main.class);
+    static Logger logger = LoggerFactory.getLogger(MoveRefactoringHandler.class);
 
     private String fine;
     private String lastFineCommitId;

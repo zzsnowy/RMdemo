@@ -5,8 +5,14 @@ import java.io.*;
 public class CommitUtil {
     public static void main(String[] args) throws IOException {
 
-        String pro = "HikariCP";
+        String pro = "liquibase";
 
+        //getMoveRefCommitId(pro);
+        getMetricsCommitId(pro);
+
+    }
+
+    private static void getMoveRefCommitId(String pro) throws IOException {
         File writename = new File("/Users/zzsnowy/StudyDiary/MSA/graduationPro/experiment/commitId/" + pro + "/" + pro + ".txt");
         writename.createNewFile();
         BufferedWriter out = new BufferedWriter(new FileWriter(writename));
@@ -31,7 +37,7 @@ public class CommitUtil {
 
         String tmp = "";
         while (lineF != null) {
-            if(!tmp.equals("")){
+            if(!"".equals(tmp)){
 
                 out.write(tmp + " " + lineF + "\n");
             }
@@ -43,5 +49,54 @@ public class CommitUtil {
 
         out.flush(); // 把缓存区内容压入文件
         out.close(); // 关闭文件
+    }
+
+    private static void getMetricsCommitId(String pro) throws IOException{
+
+        File writename = new File("/Users/zzsnowy/StudyDiary/MSA/graduationPro/experiment/MetricsCommitId/" + pro + ".txt");
+        writename.createNewFile();
+        BufferedWriter out = new BufferedWriter(new FileWriter(writename));
+
+        String pathname = "/Users/zzsnowy/StudyDiary/MSA/graduationPro/experiment/MoveRefCommitId/" + pro + ".txt";
+
+        File filename = new File(pathname);
+        InputStreamReader reader = new InputStreamReader(
+                new FileInputStream(filename));
+        BufferedReader br = new BufferedReader(reader);
+
+        String line = br.readLine();
+
+        while (line != null) {
+
+            String coarseVer = getCoarseVer(pro, line);
+            out.write( coarseVer + " " + line + "\n");
+            line = br.readLine();
+        }
+
+        out.flush(); // 把缓存区内容压入文件
+        out.close(); // 关闭文件
+    }
+
+    private static String getCoarseVer(String pro, String fineVer) throws IOException {
+
+        String pathname = "/Users/zzsnowy/StudyDiary/MSA/graduationPro/experiment/commitId/" + pro + "/" + pro + ".txt";
+
+        File filename = new File(pathname);
+        InputStreamReader reader = new InputStreamReader(
+                new FileInputStream(filename));
+        BufferedReader br = new BufferedReader(reader);
+
+        String line = br.readLine();
+
+        while (line != null) {
+
+            String fineId = line.toString().split(" ")[1];
+            if(fineId.equals(fineVer)){
+                return line.toString().split(" ")[0];
+            }
+            line = br.readLine();
+        }
+
+        return null;
     }
 }

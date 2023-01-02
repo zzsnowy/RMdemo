@@ -1,3 +1,5 @@
+package label;
+
 import org.refactoringminer.api.GitHistoryRefactoringMiner;
 import org.refactoringminer.api.GitService;
 import org.refactoringminer.rm1.GitHistoryRefactoringMinerImpl;
@@ -5,6 +7,7 @@ import org.refactoringminer.util.GitServiceImpl;
 import org.eclipse.jgit.lib.Repository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import refactoring.MoveRefactoringHandler;
 
 import java.io.*;
 import java.util.*;
@@ -13,7 +16,7 @@ import java.util.*;
 public class Main {
 
     static Logger logger = LoggerFactory.getLogger(Main.class);
-    static String pro = "HikariCP";
+    static String pro = "liquibase";
     public static void main(String[] args) throws Exception {
 
         String dpathname = "/Users/zzsnowy/StudyDiary/MSA/graduationPro/experiment/dependencies/" + pro;
@@ -23,7 +26,7 @@ public class Main {
         int k = input.nextInt();
         if(k == 1){
 
-            InputStream in =  new  FileInputStream( "io" + File.separator + "map.txt" );
+            InputStream in =  new  FileInputStream( "io" + File.separator + "limap.txt" );
             ObjectInputStream os =  new  ObjectInputStream(in);
             Map<String, List<String>[]> dClassifyMap = (Map<String, List<String>[]>) os.readObject();
             os.close();
@@ -104,8 +107,11 @@ public class Main {
         for (Map.Entry<String, List<String>[]> entry : dependencyClassifyMap.entrySet()) {
 
             String commitId = entry.getKey();
+            List<String> moveField = new ArrayList<>();
+            List<String> moveMethod = new ArrayList<>();
+            List<String> noLabel = new ArrayList<>();
 
-            System.out.println("正在处理：" + commitId);
+            logger.info("正在处理{}", commitId);
             List<String> listMM = entry.getValue()[0];
             List<String> listMF = entry.getValue()[1];
             String pathname = dpathname + "/" + pro + "_" + commitId + ".txt";
@@ -124,25 +130,27 @@ public class Main {
             while (line != null) {
                 boolean flag = false;
                 for(String mm : listMM){
-                    //System.out.println(mm);
                     if (line.matches(mm)){
                         flag = true;
+                        moveMethod.add(line);
                         System.out.println("MM:" + line);
                     }
                 }
 
                 for(String mf : listMF){
-                    //System.out.println(mf);
                     if (line.matches(mf)){
                         flag = true;
+                        moveField.add(line);
                         System.out.println("MF:" + line);
                     }
                 }
                 if(!flag){
-                    //System.out.println("nolabel " + line);
+                    noLabel.add(line);
                 }
                 line = br.readLine();
             }
+            DependencyHandler dependencyHandler = new DependencyHandler(pro, commitId, moveMethod, moveField, noLabel);
+            dependencyHandler.handle();
         }
     }
 

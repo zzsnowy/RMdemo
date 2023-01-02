@@ -25,36 +25,33 @@
             <artifactId>org.eclipse.jgit</artifactId>
             <version>6.3.0.202209071007-r</version>
         </dependency>
+
         <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-log4j12 -->
         <dependency>
-
             <groupId>log4j</groupId>
-
             <artifactId>log4j</artifactId>
-
             <version>1.2.17</version>
-
         </dependency>
 
         <dependency>
-
             <groupId>org.slf4j</groupId>
-
             <artifactId>slf4j-api</artifactId>
-
             <version>1.7.30</version>
-
         </dependency>
 
         <dependency>
-
             <groupId>org.slf4j</groupId>
-
             <artifactId>slf4j-log4j12</artifactId>
-
             <version>1.7.7</version>
-
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.github.mauricioaniche/ck -->
+        <dependency>
+            <groupId>com.github.mauricioaniche</groupId>
+            <artifactId>ck</artifactId>
+            <version>0.7.0</version>
+        </dependency>
+
 
     </dependencies>
 
