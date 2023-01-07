@@ -23,12 +23,10 @@ public class MoveRefactoringHandler extends RefactoringHandler {
 
     private String fine;
     private String lastFineCommitId;
-    private BufferedWriter out;
     private Map<String, List<String>[]> dependencyClassifyMap;
-    public MoveRefactoringHandler(String fine, String lastFineCommitId, BufferedWriter out, Map<String, List<String>[]> dependencyClassifyMap) {
+    public MoveRefactoringHandler(String fine, String lastFineCommitId, Map<String, List<String>[]> dependencyClassifyMap) {
         this.fine = fine;
         this.lastFineCommitId = lastFineCommitId;
-        this.out = out;
         this.dependencyClassifyMap = dependencyClassifyMap;
     }
 
@@ -41,7 +39,7 @@ public class MoveRefactoringHandler extends RefactoringHandler {
         for (Refactoring ref : refactorings) {
             if (ref.getRefactoringType() == MOVE_OPERATION) {
                 if (!flag) {
-                    flag = isFlag(commitId, fine, lastFineCommitId, out, dependencyClassifyMap);
+                    flag = isFlag(commitId, fine, lastFineCommitId, dependencyClassifyMap);
                 }
 
                 logger.info("重构操作为：{}",ref);
@@ -64,7 +62,7 @@ public class MoveRefactoringHandler extends RefactoringHandler {
 
             } else if (ref.getRefactoringType() == MOVE_ATTRIBUTE) {
                 if (!flag) {
-                    flag = isFlag(commitId, fine, lastFineCommitId, out, dependencyClassifyMap);
+                    flag = isFlag(commitId, fine, lastFineCommitId, dependencyClassifyMap);
                 }
 
                 logger.info("重构操作为：{}",ref);
@@ -86,14 +84,10 @@ public class MoveRefactoringHandler extends RefactoringHandler {
 
         }
     }
-    private static boolean isFlag(String commitId, String fine, String lastFineCommitId, BufferedWriter out, Map<String, List<String>[]> dependencyClassifyMap) {
+    private static boolean isFlag(String commitId, String fine, String lastFineCommitId, Map<String, List<String>[]> dependencyClassifyMap) {
         boolean flag;
         logger.info("Refactorings at {} {} {}", commitId, fine, lastFineCommitId);
-        try {
-            out.write(lastFineCommitId + "\n");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+
         if(dependencyClassifyMap.containsKey(lastFineCommitId)){
             logger.error("重复的lastFineCommitId: {}", lastFineCommitId);
         } else {

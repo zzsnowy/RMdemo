@@ -5,14 +5,14 @@ import java.io.*;
 public class CommitUtil {
     public static void main(String[] args) throws IOException {
 
-        String pro = "liquibase";
+        String pro = "librec";
 
-        //getMoveRefCommitId(pro);
-        getMetricsCommitId(pro);
+        //getMatchCommitId(pro);
+        //getMetricsCommitId(pro);
 
     }
 
-    private static void getMoveRefCommitId(String pro) throws IOException {
+    private static void getMatchCommitId(String pro) throws IOException {
         File writename = new File("/Users/zzsnowy/StudyDiary/MSA/graduationPro/experiment/commitId/" + pro + "/" + pro + ".txt");
         writename.createNewFile();
         BufferedWriter out = new BufferedWriter(new FileWriter(writename));
@@ -90,9 +90,9 @@ public class CommitUtil {
 
         while (line != null) {
 
-            String fineId = line.toString().split(" ")[1];
+            String fineId = line.split(" ")[1];
             if(fineId.equals(fineVer)){
-                return line.toString().split(" ")[0];
+                return line.split(" ")[0];
             }
             line = br.readLine();
         }

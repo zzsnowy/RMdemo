@@ -70,7 +70,8 @@ public class DependencyHandler {
             supportCount = Integer.parseInt(data[2]);
             confidence = Double.parseDouble(data[3]);
 
-            if(supportCount < 1 || confidence < 0.4){
+            //过滤不符合阈值的数据以及测试相关代码
+            if(supportCount < 1 || confidence < 0.4 || dependency.matches("[\\s\\S]*src_test[\\s\\S]*")){
                 iterator.remove();
                 //logger.info("当前依赖被过滤，supper count = {}, confidence = {}", supportCount, confidence);
             }
@@ -119,7 +120,7 @@ public class DependencyHandler {
 
         for (String dependency : list) {
             String[] data = dependency.split("\t");
-            out.write(name + "\t" + data[0] + data[1] + "\n");
+            out.write(name + "\t" + data[0] + "\t" +  data[1] + "\n");
         }
 
         logger.info("commitId = {}, 共有{}条{}依赖, 写入成功。", commitId, list.size(), name);
@@ -127,7 +128,7 @@ public class DependencyHandler {
 
     private BufferedWriter getBufferedWriter() throws IOException {
 
-        String dirPath = "/Users/zzsnowy/StudyDiary/MSA/graduationPro/experiment/labelDependencies/" + pro;
+        String dirPath = "/Users/zzsnowy/StudyDiary/MSA/graduationPro/experiment/labelDependenciesData/" + pro;
 
         File dir = new File(dirPath);
         dir.mkdir();
