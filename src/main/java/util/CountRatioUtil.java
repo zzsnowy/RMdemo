@@ -70,17 +70,6 @@ public class CountRatioUtil {
             boolean flag = true;
             String node1 = dependency.split("\t")[1];
             String node2 = dependency.split("\t")[2];
-            /*
-            if(node1.matches("[\\s\\S]*src_test[\\s\\S]*")){
-                flag = false;
-            }
-            if(node2.matches("[\\s\\S]*src_test[\\s\\S]*")){
-                flag = false;
-            }
-            if(!flag){
-                dependency = br.readLine();
-                continue;
-            }*/
             if(type.equals(dependency.split("\t")[0])){
                 sum ++;
             }

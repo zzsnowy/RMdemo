@@ -20,36 +20,52 @@ public class DependencyHandler {
 
     public List<String> noLabel;
 
+    BufferedWriter outDep;
+
     public static final String MOVE_METHOD = "MOVE_METHOD";
     public static final String MOVE_FIELD = "MOVE_FIELD";
     public static final String NO_LABEL = "NO_LABEL";
 
 
-    public DependencyHandler(String pro, String commitId, List<String> moveMethod, List<String> moveField, List<String> noLabel) {
+    public DependencyHandler(String pro, String commitId, List<String> moveMethod, List<String> moveField, List<String> noLabel, BufferedWriter outDep) {
         this.pro = pro;
         this.commitId = commitId;
         this.moveMethod = moveMethod;
         this.moveField = moveField;
         this.noLabel = noLabel;
+        this.outDep = outDep;
     }
 
     public void handle() throws IOException {
 
+        filterAndDeduplicate(MOVE_METHOD, moveMethod);
+        filterAndDeduplicate(MOVE_FIELD, moveField);
+
+        if(moveMethod.isEmpty() && moveField.isEmpty()){
+            logger.info("已移除commitId = {}, 不存在MM&MF样本", commitId);
+            return;
+        }
+
+        filterAndDeduplicate(NO_LABEL, noLabel);
+
         BufferedWriter out = getBufferedWriter();
 
-        handle(out, MOVE_METHOD, moveMethod);
-        handle(out, MOVE_FIELD, moveField);
-        handle(out, NO_LABEL, noLabel);
+        dependencyFileGenerate(out, MOVE_METHOD, moveMethod);
+        dependencyFileGenerate(out, MOVE_FIELD, moveField);
+        dependencyFileGenerate(out, NO_LABEL, noLabel);
+
+        outDep.write(commitId + "\n");
 
         out.flush(); // 把缓存区内容压入文件
         out.close(); // 关闭文件
     }
 
-    public void handle(BufferedWriter out, String name, List<String> list) throws IOException {
+    private void filterAndDeduplicate(String name, List<String> list) {
         dependencyFilter(name, list);
         dependencyDeduplicate(name, list);
-        dependencyFileGenerate(out, name, list);
     }
+
+
 
     public void dependencyFilter(String name, List<String> list){
 

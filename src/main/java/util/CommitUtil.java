@@ -5,7 +5,20 @@ import java.io.*;
 public class CommitUtil {
     public static void main(String[] args) throws IOException {
 
-        String pro = "librec";
+        String proListPath = "/Users/zzsnowy/IdeaProjects/RMdemo/src/main/resources/proList";
+
+        File filename = new File(proListPath);
+        InputStreamReader reader = new InputStreamReader(
+                new FileInputStream(filename));
+        BufferedReader br = new BufferedReader(reader);
+
+        String pro = br.readLine();
+
+        while (pro != null) {
+            getMetricsCommitId(pro);
+            pro = br.readLine();
+        }
+
 
         //getMatchCommitId(pro);
         //getMetricsCommitId(pro);
@@ -57,7 +70,7 @@ public class CommitUtil {
         writename.createNewFile();
         BufferedWriter out = new BufferedWriter(new FileWriter(writename));
 
-        String pathname = "/Users/zzsnowy/StudyDiary/MSA/graduationPro/experiment/MoveRefCommitId/" + pro + ".txt";
+        String pathname = "/Users/zzsnowy/StudyDiary/MSA/graduationPro/experiment/MoveRefAtDepCommitId/" + pro + ".txt";
 
         File filename = new File(pathname);
         InputStreamReader reader = new InputStreamReader(

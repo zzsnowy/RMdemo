@@ -18,7 +18,7 @@ public class Main {
     static Logger logger = LoggerFactory.getLogger(Main.class);
     public static void main(String[] args) throws Exception {
 
-        String proListPath = "/Users/zzsnowy/IdeaProjects/RMdemo/src/main/resources/proList";
+        String proListPath = "/Users/zzsnowy/IdeaProjects/RMdemo/src/main/resources/proTmpList";
 
         File filename = new File(proListPath);
         InputStreamReader reader = new InputStreamReader(
@@ -178,8 +178,7 @@ public class Main {
                 line = br.readLine();
             }
             if(f){
-                outDep.write(commitId + "\n");
-                DependencyHandler dependencyHandler = new DependencyHandler(pro, commitId, moveMethod, moveField, noLabel);
+                DependencyHandler dependencyHandler = new DependencyHandler(pro, commitId, moveMethod, moveField, noLabel, outDep);
                 dependencyHandler.handle();
             }
 
