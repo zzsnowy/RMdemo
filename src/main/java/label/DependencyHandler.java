@@ -80,16 +80,16 @@ public class DependencyHandler {
 
             String dependency = iterator.next();
 
-            //logger.info("正在过滤依赖，当前处理的依赖为：{}", dependency);
+            logger.info("正在过滤依赖，当前处理的依赖为：{}", dependency);
 
             String[] data = dependency.split("\t");
             supportCount = Integer.parseInt(data[2]);
             confidence = Double.parseDouble(data[3]);
 
-            //过滤不符合阈值的数据以及测试相关代码
-            if(supportCount < 1 || confidence < 0.4 || dependency.matches("[\\s\\S]*src_test[\\s\\S]*")){
+            //过滤不符合阈值的数据、测试的相关代码、.gitkeep的代码
+            if(supportCount < 1 || confidence < 0.4 || dependency.matches("[\\s\\S]*src_test[\\s\\S]*") || dependency.matches("[\\s\\S]*\\.gitkeep[\\s\\S]*")){
                 iterator.remove();
-                //logger.info("当前依赖被过滤，supper count = {}, confidence = {}", supportCount, confidence);
+                logger.info("当前依赖被过滤，supper count = {}, confidence = {}", supportCount, confidence);
             }
 
         }

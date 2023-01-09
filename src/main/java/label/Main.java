@@ -18,7 +18,7 @@ public class Main {
     static Logger logger = LoggerFactory.getLogger(Main.class);
     public static void main(String[] args) throws Exception {
 
-        String proListPath = "/Users/zzsnowy/IdeaProjects/RMdemo/src/main/resources/proTmpList";
+        String proListPath = "/Users/zzsnowy/IdeaProjects/RMdemo/src/main/resources/proList";
 
         File filename = new File(proListPath);
         InputStreamReader reader = new InputStreamReader(

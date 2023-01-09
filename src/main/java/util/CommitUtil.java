@@ -15,6 +15,7 @@ public class CommitUtil {
         String pro = br.readLine();
 
         while (pro != null) {
+            System.out.println(pro);
             getMetricsCommitId(pro);
             pro = br.readLine();
         }
@@ -80,7 +81,7 @@ public class CommitUtil {
         String line = br.readLine();
 
         while (line != null) {
-
+            System.out.println(line);
             String coarseVer = getCoarseVer(pro, line);
             out.write( coarseVer + " " + line + "\n");
             line = br.readLine();
