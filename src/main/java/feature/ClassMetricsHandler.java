@@ -14,29 +14,15 @@ import java.util.List;
 
 import static feature.Main.logger;
 
-public class ClassMetricsHandler {
+public class ClassMetricsHandler extends MetricsHandler{
 
-    static void readAndHandleLabelDependenciesData(String pro) throws IOException {
+    String type;
 
-        logger.info("正在处理：{}", pro);
-
-        String commitIdPath = "/Users/zzsnowy/StudyDiary/MSA/graduationPro/experiment/MoveRefAtDepCommitId/" + pro + ".txt";
-
-        File filename = new File(commitIdPath);
-        InputStreamReader reader = new InputStreamReader(
-                new FileInputStream(filename));
-        BufferedReader br = new BufferedReader(reader);
-
-        String commitId = br.readLine();
-
-        while (commitId != null) {
-            readAndHandleLabelDependenciesDataByCommitId(pro, commitId);
-            commitId = br.readLine();
-        }
-
+    public ClassMetricsHandler(String type) {
+        this.type = type;
     }
 
-    private static void readAndHandleLabelDependenciesDataByCommitId(String pro, String commitId) throws IOException {
+    public void readAndHandleLabelDependenciesDataByCommitId(String pro, String commitId) throws IOException {
 
         List<String[]> classMetricslists = readLabelDependenciesClassMetricsCsv(pro, commitId);
         List<String[]> entityClassMetricsList = new ArrayList<>();
@@ -64,15 +50,13 @@ public class ClassMetricsHandler {
                 continue;
             }
 
-
-
             String[] s = calEntityClassMetrics(labelDependency, s1, s2);
 
             entityClassMetricsList.add(s);
 
             labelDependency = br.readLine();
         }
-        writeCsv(pro, commitId, entityClassMetricsList);
+        writeCsv(pro, commitId, type, entityClassMetricsList);
     }
 
 
@@ -143,22 +127,5 @@ public class ClassMetricsHandler {
         List<String[]> lists = CsvUtil.readCsv(path);
 
         return lists;
-    }
-
-    private static void writeCsv(String pro, String commitId, List<String[]> entityClassMetricsList) throws IOException {
-
-        String dirPath = "/Users/zzsnowy/StudyDiary/MSA/graduationPro/experiment/feature/class/" + pro;
-
-        File dir = new File(dirPath);
-        dir.mkdir();
-
-        String path = "/Users/zzsnowy/StudyDiary/MSA/graduationPro/experiment/feature/class/" + pro + "/"
-                + CommitUtil.getCoarseVer(pro, commitId) + ".csv";
-
-        // 写入csv 制表符消失
-        CsvUtil.writeCsv(entityClassMetricsList, "sheet0", path);
-
-        logger.info("pro:{}, coarseCommitId:{}, classMetrics写入成功", pro, commitId);
-
     }
 }

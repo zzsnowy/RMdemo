@@ -9,6 +9,11 @@ public class Main {
 
     static Logger logger = LoggerFactory.getLogger(ClassMetricsHandler.class);
 
+    public static final String CLASS = "class";
+
+    public static final String EVOLUTION = "evolution";
+
+
     public static void main(String[] args) throws IOException {
 
         String proListPath = "/Users/zzsnowy/IdeaProjects/RMdemo/src/main/resources/proTmpList";
@@ -20,10 +25,15 @@ public class Main {
 
         String pro = br.readLine();
 
+
         while (pro != null) {
 
-            //ClassMetricsHandler.readAndHandleLabelDependenciesData(pro);
-            EvolutionMetricsHandler.readAndHandleLabelDependenciesData(pro);
+            ClassMetricsHandler classMetricsHandler = new ClassMetricsHandler(CLASS);
+            classMetricsHandler.readAndHandleLabelDependenciesData(pro);
+
+            EvolutionMetricsHandler evolutionMetricsHandler = new EvolutionMetricsHandler(EVOLUTION);
+            evolutionMetricsHandler.readAndHandleLabelDependenciesData(pro);
+
             pro = br.readLine();
         }
 

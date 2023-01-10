@@ -9,29 +9,15 @@ import java.util.List;
 
 import static feature.Main.logger;
 
-public class EvolutionMetricsHandler {
+public class EvolutionMetricsHandler extends MetricsHandler{
 
-    static void readAndHandleLabelDependenciesData(String pro) throws IOException {
+    String type;
 
-        logger.info("正在处理：{}", pro);
-
-        String commitIdPath = "/Users/zzsnowy/StudyDiary/MSA/graduationPro/experiment/MoveRefAtDepCommitId/" + pro + ".txt";
-
-        File filename = new File(commitIdPath);
-        InputStreamReader reader = new InputStreamReader(
-                new FileInputStream(filename));
-        BufferedReader br = new BufferedReader(reader);
-
-        String commitId = br.readLine();
-
-        while (commitId != null) {
-            readAndHandleLabelDependenciesDataByCommitId(pro, commitId);
-            commitId = br.readLine();
-        }
-
+    public EvolutionMetricsHandler(String type) {
+        this.type = type;
     }
 
-    private static void readAndHandleLabelDependenciesDataByCommitId(String pro, String commitId) throws IOException {
+    public void readAndHandleLabelDependenciesDataByCommitId(String pro, String commitId) throws IOException {
 
         logger.info("正在处理：{}", commitId);
 
@@ -54,7 +40,7 @@ public class EvolutionMetricsHandler {
             entityEvolutionMetricsList.add(s);
             labelDependency = br.readLine();
         }
-        writeCsv(pro, commitId, entityEvolutionMetricsList);
+        writeCsv(pro, commitId, type, entityEvolutionMetricsList);
     }
 
     private static List<String[]> readEvolutionMetricslists(String pro, String commitId) throws IOException {
@@ -102,7 +88,7 @@ public class EvolutionMetricsHandler {
                 } else {
                     s[3] = data[3];
                     if(!data[2].equals(s[1]) || !data[5].equals(s[4])){
-                        System.out.println("错误：" + labelDependency);
+                        logger.error("错误：{}", labelDependency);
                     }
                 }
                 num ++;
@@ -118,21 +104,4 @@ public class EvolutionMetricsHandler {
         return s;
     }
 
-
-    private static void writeCsv(String pro, String commitId, List<String[]> entityEvolutionMetricsList) throws IOException {
-
-        String dirPath = "/Users/zzsnowy/StudyDiary/MSA/graduationPro/experiment/feature/evolution/" + pro;
-
-        File dir = new File(dirPath);
-        dir.mkdir();
-
-        String path = "/Users/zzsnowy/StudyDiary/MSA/graduationPro/experiment/feature/evolution/" + pro + "/"
-                + CommitUtil.getCoarseVer(pro, commitId) + ".csv";
-
-        // 写入csv 制表符消失
-        CsvUtil.writeCsv(entityEvolutionMetricsList, "sheet0", path);
-
-        logger.info("pro:{}, coarseCommitId:{}, evolutionMetrics写入成功", pro, commitId);
-
-    }
 }
