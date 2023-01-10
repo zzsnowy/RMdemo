@@ -12,7 +12,7 @@ import java.util.Objects;
 public class CsvUtil {
 
 
-    public static List<String[]> readExcel(String path) {
+    public static List<String[]> readCsv(String path) {
 
         List<String[]> data = new ArrayList<>();
 
@@ -35,7 +35,7 @@ public class CsvUtil {
         return data;
     }
 
-    public static void writeExcel(String[] title, List<String[]> data, String sheetName, String filePath){
+    public static void writeCsv(List<String[]> data, String sheetName, String filePath){
 
         // 指定字符编码
         Charset charset = StandardCharsets.UTF_8;
@@ -56,13 +56,13 @@ public class CsvUtil {
     // demo测试
     public static void main(String[] args) {
 
-        List<String[]> lists = readExcel("/Users/zzsnowy/Desktop/class.csv");
+        List<String[]> lists = readCsv("/Users/zzsnowy/Desktop/class.csv");
 
         List<String[]> dataList = new ArrayList<>();
         for (int i = 1; i < lists.size(); i++) {
             dataList.add(lists.get(i));
         }
 
-        writeExcel(lists.get(0), dataList, "testSheet", "/Users/zzsnowy/Desktop/classTest.csv");
+        writeCsv(dataList, "testSheet", "/Users/zzsnowy/Desktop/classTest.csv");
     }
 }

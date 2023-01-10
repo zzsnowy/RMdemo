@@ -91,7 +91,7 @@ public class CommitUtil {
         out.close(); // 关闭文件
     }
 
-    private static String getCoarseVer(String pro, String fineVer) throws IOException {
+    public static String getCoarseVer(String pro, String fineVer) throws IOException {
 
         String pathname = "/Users/zzsnowy/StudyDiary/MSA/graduationPro/experiment/commitId/" + pro + "/" + pro + ".txt";
 
