@@ -1,10 +1,7 @@
 package feature;
 
 
-import label.Main;
 import org.apache.commons.lang3.ArrayUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import util.CommitUtil;
 import util.CsvUtil;
 
@@ -45,7 +42,7 @@ public class ClassMetricsHandler extends MetricsHandler{
             String[] s2 = findClassMetricsByNode(pro, commitId, node2, classMetricslists);
 
             if(s1 == null || s2 == null){
-                logger.error("{}出错，类指标不存在", labelDependency);
+                logger.info("{}，类指标不存在", labelDependency);
                 labelDependency = br.readLine();
                 continue;
             }

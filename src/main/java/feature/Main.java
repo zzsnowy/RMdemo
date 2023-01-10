@@ -13,10 +13,11 @@ public class Main {
 
     public static final String EVOLUTION = "evolution";
 
+    public static final String LOC = "loc";
 
     public static void main(String[] args) throws IOException {
 
-        String proListPath = "/Users/zzsnowy/IdeaProjects/RMdemo/src/main/resources/proTmpList";
+        String proListPath = "/Users/zzsnowy/IdeaProjects/RMdemo/src/main/resources/proList";
 
         File filename = new File(proListPath);
         InputStreamReader reader = new InputStreamReader(
@@ -28,11 +29,14 @@ public class Main {
 
         while (pro != null) {
 
-            ClassMetricsHandler classMetricsHandler = new ClassMetricsHandler(CLASS);
-            classMetricsHandler.readAndHandleLabelDependenciesData(pro);
+            //ClassMetricsHandler classMetricsHandler = new ClassMetricsHandler(CLASS);
+            //classMetricsHandler.readAndHandleLabelDependenciesData(pro);
 
-            EvolutionMetricsHandler evolutionMetricsHandler = new EvolutionMetricsHandler(EVOLUTION);
-            evolutionMetricsHandler.readAndHandleLabelDependenciesData(pro);
+            //EvolutionMetricsHandler evolutionMetricsHandler = new EvolutionMetricsHandler(EVOLUTION);
+            //evolutionMetricsHandler.readAndHandleLabelDependenciesData(pro);
+
+            LocMetricsHandler locMetricsHandler = new LocMetricsHandler(LOC);
+            locMetricsHandler.readAndHandleLabelDependenciesData(pro);
 
             pro = br.readLine();
         }
