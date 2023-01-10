@@ -87,7 +87,8 @@ public class DependencyHandler {
             confidence = Double.parseDouble(data[3]);
 
             //过滤不符合阈值的数据、测试的相关代码、.gitkeep的代码
-            if(supportCount < 1 || confidence < 0.4 || dependency.matches("[\\s\\S]*src_test[\\s\\S]*") || dependency.matches("[\\s\\S]*\\.gitkeep[\\s\\S]*")){
+            if(supportCount < 1 || confidence < 0.4 || dependency.matches("[\\s\\S]*src_test[\\s\\S]*") ||
+                    dependency.matches("[\\s\\S]*\\.gitkeep[\\s\\S]*") || dependency.matches("[\\s\\S]*\\.py[\\s\\S]*")){
                 iterator.remove();
                 logger.info("当前依赖被过滤，supper count = {}, confidence = {}", supportCount, confidence);
             }

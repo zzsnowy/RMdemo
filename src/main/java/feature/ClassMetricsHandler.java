@@ -12,31 +12,11 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static feature.Main.logger;
+
 public class ClassMetricsHandler {
 
-    static Logger logger = LoggerFactory.getLogger(ClassMetricsHandler.class);
-
-    public static void main(String[] args) throws IOException {
-
-        String proListPath = "/Users/zzsnowy/IdeaProjects/RMdemo/src/main/resources/proList";
-
-        File filename = new File(proListPath);
-        InputStreamReader reader = new InputStreamReader(
-                new FileInputStream(filename));
-        BufferedReader br = new BufferedReader(reader);
-
-        String pro = br.readLine();
-
-        while (pro != null) {
-            readAndHandleLabelDependenciesData(pro);
-            pro = br.readLine();
-        }
-
-    }
-
-
-
-    private static void readAndHandleLabelDependenciesData(String pro) throws IOException {
+    static void readAndHandleLabelDependenciesData(String pro) throws IOException {
 
         logger.info("正在处理：{}", pro);
 
@@ -79,6 +59,7 @@ public class ClassMetricsHandler {
             String[] s2 = findClassMetricsByNode(pro, commitId, node2, classMetricslists);
 
             if(s1 == null || s2 == null){
+                logger.error("{}出错，类指标不存在", labelDependency);
                 labelDependency = br.readLine();
                 continue;
             }
@@ -94,20 +75,40 @@ public class ClassMetricsHandler {
         writeCsv(pro, commitId, entityClassMetricsList);
     }
 
-    private static void writeCsv(String pro, String commitId, List<String[]> entityClassMetricsList) throws IOException {
 
-        String dirPath = "/Users/zzsnowy/StudyDiary/MSA/graduationPro/experiment/feature/class/" + pro;
+    private static String[] findClassMetricsByNode(String pro, String commitId, String node, List<String[]> classMetricslists) throws IOException {
 
-        File dir = new File(dirPath);
-        dir.mkdir();
+        String className = node.split("/")[0];
+        className = className.replace("__", "+");//im-server依赖的路径中存在__,原因是其文件名中有下划线，因此获取依赖时变成了两个_
+        className = className.replace("_","/");
+        className = className.replace("+","_");
 
-        String path = "/Users/zzsnowy/StudyDiary/MSA/graduationPro/experiment/feature/class/" + pro + "/"
-                + CommitUtil.getCoarseVer(pro, commitId) + ".csv";
+        String fileName = "/Users/zzsnowy/StudyDiary/MSA/graduationPro/experiment/projects/" + pro + "/" + className;
 
-        // 写入csv 制表符消失
-        CsvUtil.writeCsv(entityClassMetricsList, "sheet0", path);
+        String[] classNameArray = fileName.split("/");
+        String onlyClassName = classNameArray[classNameArray.length - 1].split("\\.")[0];
 
-        logger.info("pro:{}, coarseCommitId:{}, classMetrics写入成功", pro, commitId);
+       // int num = 0;
+        for (int i = 1; i < classMetricslists.size(); i++) {
+
+            if(classMetricslists.get(i)[0].equals(fileName) && !classMetricslists.get(i)[1].contains("$")){
+                String onlyClassNameTmp = classMetricslists.get(i)[1].split("\\.")[classMetricslists.get(i)[1].split("\\.").length - 1];
+                if(onlyClassNameTmp.equals(onlyClassName)) {
+                    return classMetricslists.get(i);
+                    //num ++;
+                }
+
+            }
+
+        }
+/*
+        if(num == 0){
+            //System.out.println(pro + " 0 " + CommitUtil.getCoarseVer(pro, commitId) + " " + node + " " + fileName);
+        }else if(num > 1){
+            System.out.println(pro + " " + CommitUtil.getCoarseVer(pro, commitId) + " " + node + " " + fileName);
+        }
+*/
+        return null;
 
     }
 
@@ -144,42 +145,20 @@ public class ClassMetricsHandler {
         return lists;
     }
 
-    private static String[] findClassMetricsByNode(String pro, String commitId, String node, List<String[]> classMetricslists) throws IOException {
+    private static void writeCsv(String pro, String commitId, List<String[]> entityClassMetricsList) throws IOException {
 
-        String className = node.split("/")[0];
-        className = className.replace("__", "+");//im-server依赖的路径中存在__,原因是其文件名中有下划线，因此获取依赖时变成了两个_
-        className = className.replace("_","/");
-        className = className.replace("+","_");
+        String dirPath = "/Users/zzsnowy/StudyDiary/MSA/graduationPro/experiment/feature/class/" + pro;
 
-        String fileName = "/Users/zzsnowy/StudyDiary/MSA/graduationPro/experiment/projects/" + pro + "/" + className;
+        File dir = new File(dirPath);
+        dir.mkdir();
 
-        String[] classNameArray = fileName.split("/");
-        String onlyClassName = classNameArray[classNameArray.length - 1].split("\\.")[0];
+        String path = "/Users/zzsnowy/StudyDiary/MSA/graduationPro/experiment/feature/class/" + pro + "/"
+                + CommitUtil.getCoarseVer(pro, commitId) + ".csv";
 
-       // int num = 0;
-        for (int i = 1; i < classMetricslists.size(); i++) {
+        // 写入csv 制表符消失
+        CsvUtil.writeCsv(entityClassMetricsList, "sheet0", path);
 
-            if(classMetricslists.get(i)[0].equals(fileName) && !classMetricslists.get(i)[1].contains("$")){
-                String onlyClassNameTmp = classMetricslists.get(i)[1].split("\\.")[classMetricslists.get(i)[1].split("\\.").length - 1];
-                if(onlyClassNameTmp.equals(onlyClassName)) {
-                    return classMetricslists.get(i);
-                    //num ++;
-                }
-
-            }
-
-        }
-/*
-        if(num == 0){
-            //System.out.println(pro + " 0 " + CommitUtil.getCoarseVer(pro, commitId) + " " + node + " " + fileName);
-        }else if(num > 1){
-            System.out.println(pro + " " + CommitUtil.getCoarseVer(pro, commitId) + " " + node + " " + fileName);
-        }
-*/
-
-
-        return null;
+        logger.info("pro:{}, coarseCommitId:{}, classMetrics写入成功", pro, commitId);
 
     }
-
 }
