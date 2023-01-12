@@ -30,8 +30,8 @@ public class Main {
 
         while (pro != null) {
 
-            ClassMetricsHandler classMetricsHandler = new ClassMetricsHandler(CLASS);
-            classMetricsHandler.readAndHandleLabelDependenciesData(pro);
+//            ClassMetricsHandler classMetricsHandler = new ClassMetricsHandler(CLASS);
+//            classMetricsHandler.readAndHandleLabelDependenciesData(pro);
 
             //EvolutionMetricsHandler evolutionMetricsHandler = new EvolutionMetricsHandler(EVOLUTION);
             //evolutionMetricsHandler.readAndHandleLabelDependenciesData(pro);

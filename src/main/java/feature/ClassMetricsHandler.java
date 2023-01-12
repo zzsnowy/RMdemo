@@ -7,7 +7,9 @@ import util.CsvUtil;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static feature.Main.logger;
 
@@ -21,6 +23,16 @@ public class ClassMetricsHandler extends MetricsHandler{
 
     public void readAndHandleLabelDependenciesDataByCommitId(String pro, String commitId) throws IOException {
 
+        Set<String> set = new HashSet<>();
+        //set.add("5a0eac472202a3dff06e753f8f7fb852da032ca5src_main_java_run_halo_app_utils_XmlTransferMapUtils.java");
+        //set.add("fe816e68431e738eb40e8a6c250f53d7b2949274src_main_java_run_halo_app_utils_XmlTransferMapUtils.java");
+        //set.add("2bf2269606aad85ced281b7da30175f417a76fc4src_main_java_com_zaxxer_hikari_ThrowawayConnection.java");
+        //set.add("2bf2269606aad85ced281b7da30175f417a76fc4src_main_java_com_zaxxer_hikari_ConnectionProxy.java");
+        //set.add("2bf2269606aad85ced281b7da30175f417a76fc4src_main_java_com_zaxxer_hikari_HikariClassLoader.java");
+        //set.add("baf55387f4b0908b7c36442f65cb063ddb2df590zuul-core_src_main_java_com_netflix_zuul_http_HttpServletRequestWrapper.java");
+        //set.add("83ec33f04015796ff0b285498e37fea5c45d24d4zuul-core_src_main_java_com_netflix_zuul_http_HttpServletRequestWrapper.java");
+        //set.add("ec6ec09ceec846c9334d4d32a1e19b9857c5ec16broker_src_main_java_org_dna_mqtt_moquette_messaging_spi_impl_ProtocolProcessor.java");
+        //set.add("6bacce6cec1be5e6ae185a6e7801ad3f4eaab1f1broker_src_main_java_org_dna_mqtt_moquette_messaging_spi_impl_ProtocolProcessor.java");
 
         List<String[]> classMetricslists = readLabelDependenciesClassMetricsCsv(pro, commitId);
         List<String[]> entityClassMetricsList = new ArrayList<>();
@@ -43,10 +55,10 @@ public class ClassMetricsHandler extends MetricsHandler{
             String[] s2 = findClassMetricsByNode(pro, commitId, node2, classMetricslists);
 
             if(s1 == null || s2 == null){
-                if(s1 == null){
+                if(!set.contains(CommitUtil.getCoarseVer(pro, commitId) + node1.split("/")[0]) && s1 == null){
                     logger.info("commit = {}, {}, 类指标不存在", CommitUtil.getCoarseVer(pro, commitId), node1);
                 }
-                if(s2 == null){
+                if(!set.contains(CommitUtil.getCoarseVer(pro, commitId) + node2.split("/")[0]) && s2 == null){
                     logger.info("commit = {}, {}, 类指标不存在", CommitUtil.getCoarseVer(pro, commitId), node2);
                 }
 
