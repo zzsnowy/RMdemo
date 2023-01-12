@@ -84,9 +84,6 @@ public class LocMetricsHandler extends MetricsHandler{
 
         String fileName = "/Users/zzsnowy/StudyDiary/MSA/graduationPro/experiment/projects/" + pro + "/" + className;
 
-        String[] classNameArray = fileName.split("/");
-        String onlyClassName = classNameArray[classNameArray.length - 1].split("\\.")[0];
-
         String methodName = data[data.length - 1].split("\\(")[0];
 
         for (int i = 1; i < locMetricslists.size(); i++) {
@@ -94,7 +91,7 @@ public class LocMetricsHandler extends MetricsHandler{
             if(locMetricslists.get(i)[0].equals(fileName)){
                 String methodNameTmp = locMetricslists.get(i)[2].split("/")[0];
                 if(methodNameTmp.equals(methodName)) {
-                    s[0] = locMetricslists.get(i)[11];
+                    s[0] = locMetricslists.get(i)[locMetricslists.get(i).length - 23];
                     return s;
                 }
 

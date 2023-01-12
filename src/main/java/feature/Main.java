@@ -36,11 +36,11 @@ public class Main {
             //EvolutionMetricsHandler evolutionMetricsHandler = new EvolutionMetricsHandler(EVOLUTION);
             //evolutionMetricsHandler.readAndHandleLabelDependenciesData(pro);
 
-            //LocMetricsHandler locMetricsHandler = new LocMetricsHandler(LOC);
-            //locMetricsHandler.readAndHandleLabelDependenciesData(pro);
+//            LocMetricsHandler locMetricsHandler = new LocMetricsHandler(LOC);
+//            locMetricsHandler.readAndHandleLabelDependenciesData(pro);
 
-//            UsageMetricsHandler usageMetricsHandler = new UsageMetricsHandler(USAGE);
-//            usageMetricsHandler.readAndHandleLabelDependenciesData(pro);
+            UsageMetricsHandler usageMetricsHandler = new UsageMetricsHandler(USAGE);
+            usageMetricsHandler.readAndHandleLabelDependenciesData(pro);
 
             pro = br.readLine();
         }
