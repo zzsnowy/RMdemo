@@ -65,9 +65,7 @@ public class LocMetricsHandler extends MetricsHandler{
 
         String path = "/Users/zzsnowy/StudyDiary/MSA/graduationPro/experiment/metrics/" + pro + "/" + coarseCommitId + "/" + "method.csv";
 
-        List<String[]> lists = CsvUtil.readCsv(path);
-
-        return lists;
+        return CsvUtil.readCsv(path);
     }
 
     private String[] findLocMetricsByNode(String pro, String commitId, String node, List<String[]> locMetricslists) {
@@ -93,10 +91,9 @@ public class LocMetricsHandler extends MetricsHandler{
 
         for (int i = 1; i < locMetricslists.size(); i++) {
 
-            if(locMetricslists.get(i)[0].equals(fileName) && !locMetricslists.get(i)[1].contains("$")){
-                String onlyClassNameTmp = locMetricslists.get(i)[1].split("\\.")[locMetricslists.get(i)[1].split("\\.").length - 1];
+            if(locMetricslists.get(i)[0].equals(fileName)){
                 String methodNameTmp = locMetricslists.get(i)[2].split("/")[0];
-                if(onlyClassNameTmp.equals(onlyClassName) && methodNameTmp.equals(methodName)) {
+                if(methodNameTmp.equals(methodName)) {
                     s[0] = locMetricslists.get(i)[11];
                     return s;
                 }

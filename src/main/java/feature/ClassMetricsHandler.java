@@ -21,6 +21,7 @@ public class ClassMetricsHandler extends MetricsHandler{
 
     public void readAndHandleLabelDependenciesDataByCommitId(String pro, String commitId) throws IOException {
 
+
         List<String[]> classMetricslists = readLabelDependenciesClassMetricsCsv(pro, commitId);
         List<String[]> entityClassMetricsList = new ArrayList<>();
 
@@ -42,7 +43,13 @@ public class ClassMetricsHandler extends MetricsHandler{
             String[] s2 = findClassMetricsByNode(pro, commitId, node2, classMetricslists);
 
             if(s1 == null || s2 == null){
-                logger.info("{}，类指标不存在", labelDependency);
+                if(s1 == null){
+                    logger.info("commit = {}, {}, 类指标不存在", CommitUtil.getCoarseVer(pro, commitId), node1);
+                }
+                if(s2 == null){
+                    logger.info("commit = {}, {}, 类指标不存在", CommitUtil.getCoarseVer(pro, commitId), node2);
+                }
+
                 labelDependency = br.readLine();
                 continue;
             }
@@ -53,7 +60,7 @@ public class ClassMetricsHandler extends MetricsHandler{
 
             labelDependency = br.readLine();
         }
-        writeCsv(pro, commitId, type, entityClassMetricsList);
+        //writeCsv(pro, commitId, type, entityClassMetricsList);
     }
 
 
@@ -121,8 +128,6 @@ public class ClassMetricsHandler extends MetricsHandler{
 
         String path = "/Users/zzsnowy/StudyDiary/MSA/graduationPro/experiment/metrics/" + pro + "/" + coarseCommitId + "/" + "class.csv";
 
-        List<String[]> lists = CsvUtil.readCsv(path);
-
-        return lists;
+        return CsvUtil.readCsv(path);
     }
 }

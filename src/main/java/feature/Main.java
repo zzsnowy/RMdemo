@@ -14,6 +14,7 @@ public class Main {
     public static final String EVOLUTION = "evolution";
 
     public static final String LOC = "loc";
+    public static final String USAGE = "usage";
 
     public static void main(String[] args) throws IOException {
 
@@ -29,14 +30,17 @@ public class Main {
 
         while (pro != null) {
 
-            //ClassMetricsHandler classMetricsHandler = new ClassMetricsHandler(CLASS);
-            //classMetricsHandler.readAndHandleLabelDependenciesData(pro);
+            ClassMetricsHandler classMetricsHandler = new ClassMetricsHandler(CLASS);
+            classMetricsHandler.readAndHandleLabelDependenciesData(pro);
 
             //EvolutionMetricsHandler evolutionMetricsHandler = new EvolutionMetricsHandler(EVOLUTION);
             //evolutionMetricsHandler.readAndHandleLabelDependenciesData(pro);
 
-            LocMetricsHandler locMetricsHandler = new LocMetricsHandler(LOC);
-            locMetricsHandler.readAndHandleLabelDependenciesData(pro);
+            //LocMetricsHandler locMetricsHandler = new LocMetricsHandler(LOC);
+            //locMetricsHandler.readAndHandleLabelDependenciesData(pro);
+
+//            UsageMetricsHandler usageMetricsHandler = new UsageMetricsHandler(USAGE);
+//            usageMetricsHandler.readAndHandleLabelDependenciesData(pro);
 
             pro = br.readLine();
         }
