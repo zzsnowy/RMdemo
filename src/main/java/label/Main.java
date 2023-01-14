@@ -18,7 +18,7 @@ public class Main {
     static Logger logger = LoggerFactory.getLogger(Main.class);
     public static void main(String[] args) throws Exception {
 
-        String proListPath = "/Users/zzsnowy/IdeaProjects/RMdemo/src/main/resources/proList";
+        String proListPath = "/Users/zzsnowy/IdeaProjects/RMdemo/src/main/resources/proTmpList";
 
         File filename = new File(proListPath);
         InputStreamReader reader = new InputStreamReader(
@@ -40,6 +40,7 @@ public class Main {
         System.out.println("请选择是否从文件读取：1.是 2.否");
         Scanner input = new Scanner(System.in);
         int k = input.nextInt();
+        //int k = 2;
 
         File writename = new File("/Users/zzsnowy/StudyDiary/MSA/graduationPro/experiment/MoveRefCommitId/" + pro + ".txt");
         writename.createNewFile();
@@ -55,7 +56,7 @@ public class Main {
             ObjectInputStream os =  new  ObjectInputStream(in);
             Map<String, List<String>[]> dClassifyMap = (Map<String, List<String>[]>) os.readObject();
             os.close();
-            //removeMap(dClassifyMap);
+
             labelDependency(pro, out, outDep, dpathname, dClassifyMap);
         } else if(k == 2){
 

@@ -9,7 +9,7 @@ public class CountRatioUtil {
     public static final String NO_LABEL = "NO_LABEL";
     public static void main(String[] args) throws IOException {
 
-        String proListPath = "/Users/zzsnowy/IdeaProjects/RMdemo/src/main/resources/proList";
+        String proListPath = "/Users/zzsnowy/IdeaProjects/RMdemo/src/main/resources/proTmpList";
 
         File filename = new File(proListPath);
         InputStreamReader reader = new InputStreamReader(
@@ -57,6 +57,7 @@ public class CountRatioUtil {
 
     private static int count(String pro, String commitId, String type) throws IOException {
         String pathname = "/Users/zzsnowy/StudyDiary/MSA/graduationPro/experiment/labelDependenciesData/" + pro + "/" + commitId + ".txt";
+        //String pathname = "/Users/zzsnowy/StudyDiary/MSA/graduationPro/experiment/allLabelDependencies/" + pro + "/" + commitId + ".txt";
 
         File filename = new File(pathname);
         InputStreamReader reader = new InputStreamReader(

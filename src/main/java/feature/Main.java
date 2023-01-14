@@ -15,10 +15,11 @@ public class Main {
 
     public static final String LOC = "loc";
     public static final String USAGE = "usage";
+    public static final String FEATURES = "features";
 
     public static void main(String[] args) throws IOException {
 
-        String proListPath = "/Users/zzsnowy/IdeaProjects/RMdemo/src/main/resources/proList";
+        String proListPath = "/Users/zzsnowy/IdeaProjects/RMdemo/src/main/resources/proTmpList";
 
         File filename = new File(proListPath);
         InputStreamReader reader = new InputStreamReader(
@@ -30,17 +31,20 @@ public class Main {
 
         while (pro != null) {
 
-//            ClassMetricsHandler classMetricsHandler = new ClassMetricsHandler(CLASS);
-//            classMetricsHandler.readAndHandleLabelDependenciesData(pro);
+            ClassMetricsHandler classMetricsHandler = new ClassMetricsHandler(CLASS);
+            classMetricsHandler.readAndHandleLabelDependenciesData(pro);
 
-            //EvolutionMetricsHandler evolutionMetricsHandler = new EvolutionMetricsHandler(EVOLUTION);
-            //evolutionMetricsHandler.readAndHandleLabelDependenciesData(pro);
+            EvolutionMetricsHandler evolutionMetricsHandler = new EvolutionMetricsHandler(EVOLUTION);
+            evolutionMetricsHandler.readAndHandleLabelDependenciesData(pro);
 
-//            LocMetricsHandler locMetricsHandler = new LocMetricsHandler(LOC);
-//            locMetricsHandler.readAndHandleLabelDependenciesData(pro);
+            LocMetricsHandler locMetricsHandler = new LocMetricsHandler(LOC);
+            locMetricsHandler.readAndHandleLabelDependenciesData(pro);
 
             UsageMetricsHandler usageMetricsHandler = new UsageMetricsHandler(USAGE);
             usageMetricsHandler.readAndHandleLabelDependenciesData(pro);
+
+            FeatureCombiner featureCombiner = new FeatureCombiner(FEATURES);
+            featureCombiner.readAndHandleLabelDependenciesData(pro);
 
             pro = br.readLine();
         }

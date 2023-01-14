@@ -17,6 +17,8 @@ public class ClassMetricsHandler extends MetricsHandler{
 
     String type;
 
+    public static final String LEVEL = "class";
+
     public ClassMetricsHandler(String type) {
         this.type = type;
     }
@@ -34,10 +36,11 @@ public class ClassMetricsHandler extends MetricsHandler{
         //set.add("ec6ec09ceec846c9334d4d32a1e19b9857c5ec16broker_src_main_java_org_dna_mqtt_moquette_messaging_spi_impl_ProtocolProcessor.java");
         //set.add("6bacce6cec1be5e6ae185a6e7801ad3f4eaab1f1broker_src_main_java_org_dna_mqtt_moquette_messaging_spi_impl_ProtocolProcessor.java");
 
-        List<String[]> classMetricslists = readLabelDependenciesClassMetricsCsv(pro, commitId);
+        List<String[]> classMetricsLists = readLabelDependenciesMetricsCsv(pro, commitId, LEVEL);
         List<String[]> entityClassMetricsList = new ArrayList<>();
 
-        String path = "/Users/zzsnowy/StudyDiary/MSA/graduationPro/experiment/labelDependenciesData/" + pro + "/" + commitId + ".txt";
+        //String path = "/Users/zzsnowy/StudyDiary/MSA/graduationPro/experiment/labelDependenciesData/" + pro + "/" + commitId + ".txt";
+        String path = "/Users/zzsnowy/StudyDiary/MSA/graduationPro/experiment/allLabelDependencies/" + pro + "/" + commitId + ".txt";
 
         File filename = new File(path);
         InputStreamReader reader = new InputStreamReader(
@@ -51,8 +54,8 @@ public class ClassMetricsHandler extends MetricsHandler{
             String node1 = labelDependency.split("\t")[1];
             String node2 = labelDependency.split("\t")[2];
 
-            String[] s1 = findClassMetricsByNode(pro, commitId, node1, classMetricslists);
-            String[] s2 = findClassMetricsByNode(pro, commitId, node2, classMetricslists);
+            String[] s1 = findClassMetricsByNode(pro, commitId, node1, classMetricsLists);
+            String[] s2 = findClassMetricsByNode(pro, commitId, node2, classMetricsLists);
 
             if(s1 == null || s2 == null){
                 if(!set.contains(CommitUtil.getCoarseVer(pro, commitId) + node1.split("/")[0]) && s1 == null){
@@ -72,7 +75,7 @@ public class ClassMetricsHandler extends MetricsHandler{
 
             labelDependency = br.readLine();
         }
-        //writeCsv(pro, commitId, type, entityClassMetricsList);
+        writeCsv(pro, commitId, type, entityClassMetricsList);
     }
 
 
@@ -134,12 +137,4 @@ public class ClassMetricsHandler extends MetricsHandler{
         return s;
     }
 
-    private static List<String[]> readLabelDependenciesClassMetricsCsv(String pro, String commitId) throws IOException {
-
-        String coarseCommitId = CommitUtil.getCoarseVer(pro, commitId);
-
-        String path = "/Users/zzsnowy/StudyDiary/MSA/graduationPro/experiment/metrics/" + pro + "/" + coarseCommitId + "/" + "class.csv";
-
-        return CsvUtil.readCsv(path);
-    }
 }

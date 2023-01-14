@@ -21,11 +21,13 @@ public class EvolutionMetricsHandler extends MetricsHandler{
 
         logger.info("正在处理：{}", commitId);
 
-        List<String[]> evolutionMetricslists = readEvolutionMetricslists(pro, commitId);
+        List<String[]> evolutionMetricsLists = readEvolutionMetricslists(pro, commitId);
 
         List<String[]> entityEvolutionMetricsList = new ArrayList<>();
 
-        String path = "/Users/zzsnowy/StudyDiary/MSA/graduationPro/experiment/labelDependenciesData/" + pro + "/" + commitId + ".txt";
+        //String path = "/Users/zzsnowy/StudyDiary/MSA/graduationPro/experiment/labelDependenciesData/" + pro + "/" + commitId + ".txt";
+        String path = "/Users/zzsnowy/StudyDiary/MSA/graduationPro/experiment/allLabelDependencies/" + pro + "/" + commitId + ".txt";
+
 
         File filename = new File(path);
         InputStreamReader reader = new InputStreamReader(
@@ -36,7 +38,7 @@ public class EvolutionMetricsHandler extends MetricsHandler{
 
         while (labelDependency != null) {
 
-            String[] s = findEvolutionMetricsByDependency(pro, commitId, labelDependency, evolutionMetricslists);
+            String[] s = findEvolutionMetricsByDependency(pro, commitId, labelDependency, evolutionMetricsLists);
             entityEvolutionMetricsList.add(s);
             labelDependency = br.readLine();
         }
@@ -48,6 +50,7 @@ public class EvolutionMetricsHandler extends MetricsHandler{
         List<String[]> evolutionMetricslists = new ArrayList<>();
 
         String path = "/Users/zzsnowy/StudyDiary/MSA/graduationPro/experiment/dependencies/" + pro + "/" + pro + "_" + commitId + ".txt";
+
 
         File filename = new File(path);
         InputStreamReader reader = new InputStreamReader(
@@ -101,7 +104,18 @@ public class EvolutionMetricsHandler extends MetricsHandler{
         }
 
         //2 3 5
+        sortConfidence(s);
         return s;
     }
 
+    private static void sortConfidence(String[] s) {
+        double a = Double.parseDouble(s[2]);
+        double b = Double.parseDouble(s[3]);
+        if(a > b){
+            s[2] = String.valueOf(b);
+            s[3] = String.valueOf(a);
+        }
+    }
+
 }
+

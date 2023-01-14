@@ -5,7 +5,7 @@ import java.io.*;
 public class CommitUtil {
     public static void main(String[] args) throws IOException {
 
-        String proListPath = "/Users/zzsnowy/IdeaProjects/RMdemo/src/main/resources/proList";
+        String proListPath = "/Users/zzsnowy/IdeaProjects/RMdemo/src/main/resources/proTmpList";
 
         File filename = new File(proListPath);
         InputStreamReader reader = new InputStreamReader(
@@ -16,13 +16,11 @@ public class CommitUtil {
 
         while (pro != null) {
             System.out.println(pro);
+            //getMatchCommitId(pro);
             getMetricsCommitId(pro);
             pro = br.readLine();
         }
 
-
-        //getMatchCommitId(pro);
-        //getMetricsCommitId(pro);
 
     }
 

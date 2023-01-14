@@ -12,17 +12,21 @@ import static feature.Main.logger;
 public class UsageMetricsHandler extends MetricsHandler{
     String type;
 
+    public static final String LEVEL_M = "method";
+    public static final String LEVEL_F = "field";
+
     public UsageMetricsHandler(String type) {
         this.type = type;
     }
 
     public void readAndHandleLabelDependenciesDataByCommitId(String pro, String commitId) throws IOException {
 
-        List<String[]> usageMethodMetricslists = readLabelDependenciesMethodUsageMetricsCsv(pro, commitId);
-        List<String[]> usageFieldMetricslists = readLabelDependenciesFieldUsageMetricsCsv(pro, commitId);
+        List<String[]> usageMethodMetricsLists = readLabelDependenciesMetricsCsv(pro, commitId, LEVEL_M);
+        List<String[]> usageFieldMetricsLists = readLabelDependenciesMetricsCsv(pro, commitId, LEVEL_F);
         List<String[]> entityUsageMetricsList = new ArrayList<>();
 
-        String path = "/Users/zzsnowy/StudyDiary/MSA/graduationPro/experiment/labelDependenciesData/" + pro + "/" + commitId + ".txt";
+        //String path = "/Users/zzsnowy/StudyDiary/MSA/graduationPro/experiment/labelDependenciesData/" + pro + "/" + commitId + ".txt";
+        String path = "/Users/zzsnowy/StudyDiary/MSA/graduationPro/experiment/allLabelDependencies/" + pro + "/" + commitId + ".txt";
 
         File filename = new File(path);
         InputStreamReader reader = new InputStreamReader(
@@ -36,13 +40,12 @@ public class UsageMetricsHandler extends MetricsHandler{
             String node1 = labelDependency.split("\t")[1];
             String node2 = labelDependency.split("\t")[2];
 
-            String[] s1 = findUsageMetricsByNode(pro, commitId, node1, usageMethodMetricslists, usageFieldMetricslists);
-            String[] s2 = findUsageMetricsByNode(pro, commitId, node2, usageMethodMetricslists, usageFieldMetricslists);
+            String[] s1 = findUsageMetricsByNode(pro, commitId, node1, usageMethodMetricsLists, usageFieldMetricsLists);
+            String[] s2 = findUsageMetricsByNode(pro, commitId, node2, usageMethodMetricsLists, usageFieldMetricsLists);
 
             if(s1 == null || s2 == null){
-
-                //logger.info("commit:{}, {}实体Loc指标不存在", CommitUtil.getCoarseVer(pro, commitId), labelDependency);
-                String[] s = new String[]{"\"" + labelDependency + "\"", "NaN"};
+                //经测试，在现有项目中，只有可能是field未找到，即field使用次数为0
+                String[] s = new String[]{"\"" + labelDependency + "\"", "0"};
                 entityUsageMetricsList.add(s);
                 labelDependency = br.readLine();
                 continue;
@@ -57,26 +60,6 @@ public class UsageMetricsHandler extends MetricsHandler{
         writeCsv(pro, commitId, type, entityUsageMetricsList);
     }
 
-
-
-
-    private List<String[]> readLabelDependenciesMethodUsageMetricsCsv(String pro, String commitId) throws IOException {
-
-        String coarseCommitId = CommitUtil.getCoarseVer(pro, commitId);
-
-        String path = "/Users/zzsnowy/StudyDiary/MSA/graduationPro/experiment/metrics/" + pro + "/" + coarseCommitId + "/" + "method.csv";
-
-        return CsvUtil.readCsv(path);
-    }
-
-    private List<String[]> readLabelDependenciesFieldUsageMetricsCsv(String pro, String commitId) throws IOException {
-
-        String coarseCommitId = CommitUtil.getCoarseVer(pro, commitId);
-
-        String path = "/Users/zzsnowy/StudyDiary/MSA/graduationPro/experiment/metrics/" + pro + "/" + coarseCommitId + "/" + "field.csv";
-
-        return CsvUtil.readCsv(path);
-    }
     private String[] findUsageMetricsByNode(String pro, String commitId, String node, List<String[]> usageMethodMetricslists, List<String[]> usageFieldMetricslists) throws IOException {
 
         // method 和 field 都有可能找不到对应指标
@@ -121,22 +104,10 @@ public class UsageMetricsHandler extends MetricsHandler{
             }
 
         }
-        Set<String> set = new HashSet<>();
-        set.add("5a0eac472202a3dff06e753f8f7fb852da032ca5src_main_java_run_halo_app_utils_XmlTransferMapUtils.java");
-        set.add("fe816e68431e738eb40e8a6c250f53d7b2949274src_main_java_run_halo_app_utils_XmlTransferMapUtils.java");
-        set.add("2bf2269606aad85ced281b7da30175f417a76fc4src_main_java_com_zaxxer_hikari_ThrowawayConnection.java");
-        set.add("2bf2269606aad85ced281b7da30175f417a76fc4src_main_java_com_zaxxer_hikari_ConnectionProxy.java");
-        set.add("2bf2269606aad85ced281b7da30175f417a76fc4src_main_java_com_zaxxer_hikari_HikariClassLoader.java");
-        set.add("baf55387f4b0908b7c36442f65cb063ddb2df590zuul-core_src_main_java_com_netflix_zuul_http_HttpServletRequestWrapper.java");
-        set.add("83ec33f04015796ff0b285498e37fea5c45d24d4zuul-core_src_main_java_com_netflix_zuul_http_HttpServletRequestWrapper.java");
-        set.add("ec6ec09ceec846c9334d4d32a1e19b9857c5ec16broker_src_main_java_org_dna_mqtt_moquette_messaging_spi_impl_ProtocolProcessor.java");
-        set.add("6bacce6cec1be5e6ae185a6e7801ad3f4eaab1f1broker_src_main_java_org_dna_mqtt_moquette_messaging_spi_impl_ProtocolProcessor.java");
-
-        if(!set.contains(CommitUtil.getCoarseVer(pro, commitId) + node.split("/")[0])){
-            //System.out.println(CommitUtil.getCoarseVer(pro, commitId) + " " + node + " " + fileName);
-        }
 
 
+        //System.out.println(CommitUtil.getCoarseVer(pro, commitId) + " " + node + " " + fileName);
+        logger.info("commit:{}, {}实体MethodUsage指标不存在", CommitUtil.getCoarseVer(pro, commitId), node);
         return null;
     }
 
@@ -170,7 +141,8 @@ public class UsageMetricsHandler extends MetricsHandler{
         if(flag){
             return new String[]{String.valueOf(sum)};
         } else {
-            System.out.println(pro + " 0 " + CommitUtil.getCoarseVer(pro, commitId) + " " + node + " " + fileName);
+            //logger.info("commit:{}, {}实体FieldUsage指标不存在", CommitUtil.getCoarseVer(pro, commitId), node);
+            //System.out.println(pro + " 0 " + CommitUtil.getCoarseVer(pro, commitId) + " " + node + " " + fileName);
             return null;
         }
 

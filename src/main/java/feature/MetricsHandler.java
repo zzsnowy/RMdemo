@@ -45,7 +45,18 @@ public class MetricsHandler {
         // 写入csv 制表符消失
         CsvUtil.writeCsv(metricsList, "sheet0", path);
 
-        logger.info("pro:{}, coarseCommitId:{}, {}Metrics写入成功", pro, commitId, type);
+        logger.info("pro:{}, coarseCommitId:{}, {}Metrics写入成功", pro, CommitUtil.getCoarseVer(pro, commitId), type);
 
     }
+
+    public static List<String[]> readLabelDependenciesMetricsCsv(String pro, String commitId, String level) throws IOException {
+
+        String coarseCommitId = CommitUtil.getCoarseVer(pro, commitId);
+
+        String path = "/Users/zzsnowy/StudyDiary/MSA/graduationPro/experiment/metrics/" + pro + "/" + coarseCommitId + "/" + level + ".csv";
+
+        return CsvUtil.readCsv(path);
+    }
+
+
 }

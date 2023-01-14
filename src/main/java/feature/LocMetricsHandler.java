@@ -14,16 +14,18 @@ public class LocMetricsHandler extends MetricsHandler{
 
     String type;
 
+    public static final String LEVEL = "method";
     public LocMetricsHandler(String type) {
         this.type = type;
     }
 
     public void readAndHandleLabelDependenciesDataByCommitId(String pro, String commitId) throws IOException {
 
-        List<String[]> locMetricslists = readLabelDependenciesLocMetricsCsv(pro, commitId);
+        List<String[]> locMetricsLists = readLabelDependenciesMetricsCsv(pro, commitId, LEVEL);
         List<String[]> entityLocMetricsList = new ArrayList<>();
 
-        String path = "/Users/zzsnowy/StudyDiary/MSA/graduationPro/experiment/labelDependenciesData/" + pro + "/" + commitId + ".txt";
+        //String path = "/Users/zzsnowy/StudyDiary/MSA/graduationPro/experiment/labelDependenciesData/" + pro + "/" + commitId + ".txt";
+        String path = "/Users/zzsnowy/StudyDiary/MSA/graduationPro/experiment/allLabelDependencies/" + pro + "/" + commitId + ".txt";
 
         File filename = new File(path);
         InputStreamReader reader = new InputStreamReader(
@@ -37,12 +39,12 @@ public class LocMetricsHandler extends MetricsHandler{
             String node1 = labelDependency.split("\t")[1];
             String node2 = labelDependency.split("\t")[2];
 
-            String[] s1 = findLocMetricsByNode(pro, commitId, node1, locMetricslists);
-            String[] s2 = findLocMetricsByNode(pro, commitId, node2, locMetricslists);
+            String[] s1 = findLocMetricsByNode(pro, commitId, node1, locMetricsLists);
+            String[] s2 = findLocMetricsByNode(pro, commitId, node2, locMetricsLists);
 
             if(s1 == null || s2 == null){
 
-                //logger.info("commit:{}, {}实体Loc指标不存在", CommitUtil.getCoarseVer(pro, commitId), labelDependency);
+                logger.info("commit:{}, {}实体Loc指标不存在", CommitUtil.getCoarseVer(pro, commitId), labelDependency);
                 String[] s = new String[]{"\"" + labelDependency + "\"", "NaN"};
                 entityLocMetricsList.add(s);
                 labelDependency = br.readLine();
@@ -58,15 +60,6 @@ public class LocMetricsHandler extends MetricsHandler{
         writeCsv(pro, commitId, type, entityLocMetricsList);
     }
 
-
-    private List<String[]> readLabelDependenciesLocMetricsCsv(String pro, String commitId) throws IOException {
-
-        String coarseCommitId = CommitUtil.getCoarseVer(pro, commitId);
-
-        String path = "/Users/zzsnowy/StudyDiary/MSA/graduationPro/experiment/metrics/" + pro + "/" + coarseCommitId + "/" + "method.csv";
-
-        return CsvUtil.readCsv(path);
-    }
 
     private String[] findLocMetricsByNode(String pro, String commitId, String node, List<String[]> locMetricslists) {
 
@@ -90,6 +83,11 @@ public class LocMetricsHandler extends MetricsHandler{
 
             if(locMetricslists.get(i)[0].equals(fileName)){
                 String methodNameTmp = locMetricslists.get(i)[2].split("/")[0];
+
+                if(methodNameTmp.contains("\"")){
+                    methodNameTmp = methodNameTmp.substring(1);
+                }
+
                 if(methodNameTmp.equals(methodName)) {
                     s[0] = locMetricslists.get(i)[locMetricslists.get(i).length - 23];
                     return s;
@@ -98,7 +96,7 @@ public class LocMetricsHandler extends MetricsHandler{
             }
 
         }
-
+        //System.out.println(node + " " + fileName);
         return null;
     }
 
