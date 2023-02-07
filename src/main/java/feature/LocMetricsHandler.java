@@ -58,6 +58,7 @@ public class LocMetricsHandler extends MetricsHandler{
             labelDependency = br.readLine();
         }
         writeCsv(pro, commitId, type, entityLocMetricsList);
+        writeIntoLabelFeatureCsv(pro, commitId, type, entityLocMetricsList);
     }
 
 

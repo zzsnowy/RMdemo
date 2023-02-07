@@ -75,7 +75,10 @@ public class ClassMetricsHandler extends MetricsHandler{
 
             labelDependency = br.readLine();
         }
+
         writeCsv(pro, commitId, type, entityClassMetricsList);
+        writeIntoLabelFeatureCsv(pro, commitId, type, entityClassMetricsList);
+
     }
 
 

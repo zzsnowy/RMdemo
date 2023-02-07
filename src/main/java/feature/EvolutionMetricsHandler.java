@@ -43,6 +43,7 @@ public class EvolutionMetricsHandler extends MetricsHandler{
             labelDependency = br.readLine();
         }
         writeCsv(pro, commitId, type, entityEvolutionMetricsList);
+        writeIntoLabelFeatureCsv(pro, commitId, type, entityEvolutionMetricsList);
     }
 
     private static List<String[]> readEvolutionMetricslists(String pro, String commitId) throws IOException {

@@ -1,15 +1,21 @@
 package util;
 
+import feature.ClassMetricsHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.*;
 
 public class CountRatioUtil {
+
+    static Logger logger = LoggerFactory.getLogger(CountRatioUtil.class);
 
     public static final String MOVE_METHOD = "MOVE_METHOD";
     public static final String MOVE_FIELD = "MOVE_FIELD";
     public static final String NO_LABEL = "NO_LABEL";
     public static void main(String[] args) throws IOException {
 
-        String proListPath = "/Users/zzsnowy/IdeaProjects/RMdemo/src/main/resources/proTmpList";
+        String proListPath = "/Users/zzsnowy/IdeaProjects/RMdemo/src/main/resources/proList";
 
         File filename = new File(proListPath);
         InputStreamReader reader = new InputStreamReader(
@@ -67,28 +73,24 @@ public class CountRatioUtil {
         String dependency = br.readLine();
 
         int sum = 0;
+        boolean flag = false;
         while (dependency != null) {
-            boolean flag = true;
             String node1 = dependency.split("\t")[1];
             String node2 = dependency.split("\t")[2];
 
-//            if(node1.matches("[\\s\\S]*\\.py[\\s\\S]*")){
-//                //System.out.println(node1);
-//                flag = false;
-//            }
-//            if(node2.matches("[\\s\\S]*\\.py[\\s\\S]*")){
-//                //System.out.println(node2);
-//                flag = false;
-//            }
-            if(!flag){
-                dependency = br.readLine();
-                continue;
+            if(dependency.matches("[\\s\\S]*MOVE_METHOD[\\s\\S]*")){
+                flag = true;
             }
-
+            if(dependency.matches("[\\s\\S]*MOVE_FIELD[\\s\\S]*")){
+                flag = true;
+            }
             if(type.equals(dependency.split("\t")[0])){
                 sum ++;
             }
             dependency = br.readLine();
+        }
+        if(!flag){
+            logger.error("pro:{}, commitId:{}, 该文件目前没有有效类数据！", pro, commitId);
         }
         return sum;
     }

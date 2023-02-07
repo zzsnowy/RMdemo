@@ -145,7 +145,7 @@ public class Main {
             File filename = new File(pathname);
 
             if (!filename.exists()){
-                System.out.println(commitId + "不存在");
+                logger.info("pro:{}, {}, 依赖文件不存在！", pro, commitId);
                 continue;
             }
             InputStreamReader reader = new InputStreamReader(

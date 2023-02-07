@@ -58,6 +58,7 @@ public class UsageMetricsHandler extends MetricsHandler{
             labelDependency = br.readLine();
         }
         writeCsv(pro, commitId, type, entityUsageMetricsList);
+        writeIntoLabelFeatureCsv(pro, commitId, type, entityUsageMetricsList);
     }
 
     private String[] findUsageMetricsByNode(String pro, String commitId, String node, List<String[]> usageMethodMetricslists, List<String[]> usageFieldMetricslists) throws IOException {
